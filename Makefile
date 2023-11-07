@@ -1,4 +1,4 @@
-INSTALL_DIR = ~/utils/
+INSTALL_DIR ?= /usr/local
 
 .PHONY: install
 install:
