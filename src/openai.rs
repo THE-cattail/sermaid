@@ -64,7 +64,25 @@ impl OpenAI {
     {
         let req = Request::new()
             .with_temperature(0)
-            .append(Message::new("翻成中文，如输入中文则翻成英语", Role::System))
+            .append(Message::new(
+                "翻成中文，用户输入中文则翻成英语",
+                Role::System,
+            ))
+            .append(Message::new(raw_text, Role::User));
+
+        self.chat_completions(&req).await
+    }
+
+    pub async fn commit<S>(&self, raw_text: S) -> Result<Cow<'static, str>>
+    where
+        S: Into<Cow<'static, str>>,
+    {
+        let req = Request::new()
+            .with_temperature(0)
+            .append(Message::new(
+                "根据摘要用英文写符合 conventional commits 规范的 commit 文本",
+                Role::System,
+            ))
             .append(Message::new(raw_text, Role::User));
 
         self.chat_completions(&req).await
