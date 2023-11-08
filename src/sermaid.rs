@@ -83,13 +83,13 @@ impl SerMaid {
             let mut args = vec![CARGO_PKG_NAME.to_owned()];
             args.append(&mut split);
 
-            if !self.command(args).await {
+            if !self.command_and_continue(args).await {
                 return Ok(());
             }
         }
     }
 
-    async fn command(&mut self, args: Vec<String>) -> bool {
+    async fn command_and_continue(&mut self, args: Vec<String>) -> bool {
         let args = match Cli::try_parse_from(args) {
             Ok(args) => args,
             Err(err) => {
