@@ -126,9 +126,6 @@ impl SerMaid {
             Command::Translate { raw_text } => {
                 ask_openai(|| self.openai.translate(shell_words::join(raw_text))).await;
             }
-            Command::Commit { summary } => {
-                ask_openai(|| self.openai.commit(shell_words::join(summary))).await;
-            }
             Command::Clear => {
                 if let Err(err) = self
                     .editor
@@ -164,8 +161,6 @@ enum Command {
     /// Ask OpenAI API to translate to Chinese, or translate Chinese to English
     #[clap(alias = "tr")]
     Translate { raw_text: Vec<String> },
-    /// Ask OpenAI API to write git commit for the summary text
-    Commit { summary: Vec<String> },
     /// Clear screen
     Clear,
     /// Exit the program

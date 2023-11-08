@@ -30,7 +30,7 @@ impl OpenAI {
         S: Into<Cow<'static, str>>,
     {
         let mut req = Request::new().with_temperature(0).append(Message::new(
-            "回答问题，除非被要求否则语言简练不复读不举例子不做额外解释禁止胡编",
+            "回答问题，不需要复述，除非被要求否则不举例子、不做额外解释，禁止胡编",
             Role::System,
         ));
 
@@ -66,21 +66,6 @@ impl OpenAI {
             .with_temperature(0)
             .append(Message::new(
                 "翻成中文，用户输入中文则翻成英语",
-                Role::System,
-            ))
-            .append(Message::new(raw_text, Role::User));
-
-        self.chat_completions(&req).await
-    }
-
-    pub async fn commit<S>(&self, raw_text: S) -> Result<Cow<'static, str>>
-    where
-        S: Into<Cow<'static, str>>,
-    {
-        let req = Request::new()
-            .with_temperature(0)
-            .append(Message::new(
-                "根据摘要用英文写符合 conventional commits 规范的 commit 文本",
                 Role::System,
             ))
             .append(Message::new(raw_text, Role::User));
