@@ -9,25 +9,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  security:
+  global:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           extra_args: --debug --only-verified
 
-      - uses: codacy/codacy-analysis-cli-action@master
-
-      - uses: github/codeql-action/init@v2
-      - uses: github/codeql-action/autobuild@v2
-      - uses: github/codeql-action/analyze@v2
-
-      - uses: actions/dependency-review-action@v3
-
-      - uses: microsoft/DevSkim-Action@v1
-      - uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: devskim-results.sarif
+      - uses: super-linter/super-linter@v5
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MULTI_STATUS: false
+          VALIDATE_ALL_CODEBASE: false

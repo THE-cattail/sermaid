@@ -30,7 +30,7 @@ impl OpenAI {
         S: Into<Cow<'static, str>>,
     {
         let mut req = Request::new().with_temperature(0).append(Message::new(
-            "回答问题，语言简练不复读不举例子不做额外解释禁止胡编",
+            "回答问题，除非被要求否则语言简练不复读不举例子不做额外解释禁止胡编",
             Role::System,
         ));
 

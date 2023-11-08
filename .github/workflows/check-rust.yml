@@ -12,58 +12,49 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
+  nightly:
     name: nightly 环境测试
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: nightly
-          components: check, rustfmt, clippy
+          default: true
+          profile: minimal
+          components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
-          command: check --verbose --all
+          command: test
+          args: --verbose
 
       - uses: actions-rs/cargo@v1
         with:
-          command: fmt --verbose --all -- --check
+          command: fmt
+          args: --verbose --all -- --check
 
-      - uses: actions-rs/clippy-check@v1
+      - uses: giraffate/clippy-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --verbose --all -- -D warning
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy --all-features --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
-
-      - uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: rust-clippy-results.sarif
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test --verbose
+          github_token: ${{ github.token }}
+          clippy_flags: --verbose --all -- -D warning
 
       - uses: actions-rs/tarpaulin@v0.1
         with:
+          version: 0.15.0
           args: --verbose --all
-
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml
 
       - uses: actions-rs/audit-check@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: orf/cargo-bloat-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
 
   stable:
     name: stable 环境测试
@@ -73,14 +64,11 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
-          components: check, rustfmt, clippy
+          default: true
+          profile: minimal
 
       - uses: actions-rs/cargo@v1
         with:
-          command: check --verbose --all
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test --verbose
+          command: test
+          args: --verbose
