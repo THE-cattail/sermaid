@@ -1,4 +1,4 @@
-# Service-Maid（SerMaid）
+# Server-Maid（SerMaid）
 
 [![workflow](https://github.com/THE-cattail/sermaid/actions/workflows/check-global.yml/badge.svg)](https://github.com/THE-cattail/sermaid/actions/workflows/check-global.yml)
 [![workflow](https://github.com/THE-cattail/sermaid/actions/workflows/check-rust.yml/badge.svg)](https://github.com/THE-cattail/sermaid/actions/workflows/check-rust.yml)
