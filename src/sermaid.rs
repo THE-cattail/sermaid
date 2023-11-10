@@ -1,4 +1,8 @@
-use std::{borrow::Cow, future::Future, path::PathBuf, sync::Arc, time::Duration};
+use std::borrow::Cow;
+use std::future::Future;
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::time::Duration;
 
 use clap::{Parser, Subcommand};
 use color_eyre::eyre::{Context, Result};
@@ -6,7 +10,8 @@ use indicatif::ProgressBar;
 use rustyline::DefaultEditor;
 use tokio_util::sync::CancellationToken;
 
-use crate::{openai::OpenAI, Config, CARGO_PKG_NAME};
+use crate::openai::OpenAI;
+use crate::{Config, CARGO_PKG_NAME};
 
 pub(crate) struct SerMaid {
     editor: DefaultEditor,
@@ -77,7 +82,7 @@ impl SerMaid {
                 Err(err) => {
                     println!("{err:?}");
                     continue;
-                }
+                },
             };
 
             let mut args = vec![CARGO_PKG_NAME.to_owned()];
@@ -95,7 +100,7 @@ impl SerMaid {
             Err(err) => {
                 println!("{err}");
                 return true;
-            }
+            },
         };
 
         match args.command {
@@ -107,7 +112,7 @@ impl SerMaid {
                     self.history_questions.push(question);
                     self.history_answers.push(answer);
                 }
-            }
+            },
             Command::Continue { question } => {
                 let question = shell_words::join(question);
                 if let Some(answer) = ask_openai(|| {
@@ -122,10 +127,10 @@ impl SerMaid {
                     self.history_questions.push(question);
                     self.history_answers.push(answer);
                 }
-            }
+            },
             Command::Translate { raw_text } => {
                 ask_openai(|| self.openai.translate(shell_words::join(raw_text))).await;
-            }
+            },
             Command::Clear => {
                 if let Err(err) = self
                     .editor
@@ -134,10 +139,10 @@ impl SerMaid {
                 {
                     println!("{err:?}");
                 };
-            }
+            },
             Command::Exit => {
                 return false;
-            }
+            },
         }
 
         true
@@ -183,11 +188,11 @@ where
         Ok(content) => {
             println!("{content}");
             Some(content)
-        }
+        },
         Err(err) => {
             println!("{err:?}");
             None
-        }
+        },
     }
 }
 
