@@ -1,4 +1,4 @@
-name: Rust CI
+name: Continuous integration
 
 on:
   push:
@@ -10,8 +10,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  nightly-unit-test:
-    name: Unit test on nightly rust
+  rust-nightly-unit-test:
+    name: Rust unit test on nightly toolchain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +19,10 @@ jobs:
         with:
           toolchain: nightly
       - name: Run unit tests
-        run: |
-          cd ./lib/rust/
-          cargo test
+        run: cargo test
 
-  stable-unit-test:
-    name: Unit test on stable rust
+  rust-stable-unit-test:
+    name: Rust unit test on stable toolchain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,12 +30,10 @@ jobs:
         with:
           toolchain: stable
       - name: Run unit tests
-        run: |
-          cd ./lib/rust/
-          cargo test
+        run: cargo test
 
-  fmt:
-    name: Rustfmt
+  rust-fmt:
+    name: Rust format check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,12 +42,10 @@ jobs:
           toolchain: nightly
           components: rustfmt
       - name: Check format
-        run: |
-          cd ./lib/rust/
-          cargo fmt --all -- --check
+        run: cargo fmt --all -- --check
 
-  clippy:
-    name: Clippy
+  rust-clippy:
+    name: Rust clippy check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -60,6 +54,15 @@ jobs:
           toolchain: nightly
           components: clippy
       - name: Check clippy
-        run: |
-          cd ./lib/rust/
-          cargo clippy --all-targets --all-features -- -D warning
+        run: cargo clippy --all-targets --all-features -- -D warning
+
+  checkmake:
+    name: Makefile Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+      - name: Install checkmake
+        run: go install github.com/mrtazz/checkmake/cmd/checkmake@latest
+      - name: Check makefile
+        run: checkmake Makefile

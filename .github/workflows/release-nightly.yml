@@ -10,14 +10,13 @@ permissions:
 
 jobs:
   release:
-    name: Release nightly version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Get date
-        id: date
-        run: |
-          echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+      - id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
       - uses: softprops/action-gh-release@v1
         with:
           prerelease: true
