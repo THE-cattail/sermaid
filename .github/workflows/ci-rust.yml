@@ -1,0 +1,65 @@
+name: Rust CI
+
+on:
+  push:
+    branches: ["master", "beta", "stable"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  nightly-unit-test:
+    name: Unit test on nightly rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+      - name: Run unit tests
+        run: |
+          cd ./lib/rust/
+          cargo test
+
+  stable-unit-test:
+    name: Unit test on stable rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - name: Run unit tests
+        run: |
+          cd ./lib/rust/
+          cargo test
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - name: Check format
+        run: |
+          cd ./lib/rust/
+          cargo fmt --all -- --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: clippy
+      - name: Check clippy
+        run: |
+          cd ./lib/rust/
+          cargo clippy --all-targets --all-features -- -D warning
